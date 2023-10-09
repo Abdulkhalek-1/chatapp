@@ -27,13 +27,7 @@ export default function Signup() {
 			password: z
 				.string()
 				.min(8)
-				.refine(
-					(value) =>
-						value.split("").some((el) => isNaN(parseInt(el))),
-					{
-						message: "the password cannot be entirely numeric",
-					},
-				)
+
 				.refine(
 					(value) => {
 						try {
@@ -49,6 +43,17 @@ export default function Signup() {
 					},
 					{
 						message: "the password shouldn't be similar to other info",
+					},
+				)
+				.refine(
+					(value) => {
+						if (value === "") return true
+						return value
+							.split("")
+							.some((el) => isNaN(parseInt(el)))
+					},
+					{
+						message: "the password cannot be entirely numeric",
 					},
 				),
 			confirmPassword: z.string().refine(
