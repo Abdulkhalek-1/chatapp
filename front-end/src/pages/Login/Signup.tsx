@@ -1,6 +1,5 @@
 import { FormEvent, useEffect, useMemo, useState } from "react"
 import { Input } from "@/components/ui/input"
-import { Checkbox } from "@/components/ui/checkbox"
 import { Button } from "@/components/ui/button"
 import { ZodError, z } from "zod"
 import { Toaster, toast } from "sonner"
@@ -28,8 +27,20 @@ export default function Signup() {
 				{
 					message: "the password cannot be entirely numeric",
 				},
+			)
+			.refine(
+				(value) => {
+					try {
+						return !value.includes(emailValue.split("@")[0])
+					} catch {
+						return value
+					}
+				},
+				{
+					message: "the password shouldn't be similar to other info",
+				},
 			),
-		confirmPassword: z.string()!.refine(
+		confirmPassword: z.string().refine(
 			(value) => {
 				return value === passwordValue
 			},
@@ -119,14 +130,6 @@ export default function Signup() {
 							}
 						/>
 					</div>
-					<div className="w-full flex justify-between mb-2">
-						<div className="w-full flex items-center gap-2">
-							<Checkbox id="rememberMe" />
-							<label htmlFor="rememberMe">
-								remember me
-							</label>
-						</div>
-					</div>
 					<Form.submitBtn>signup</Form.submitBtn>
 					<div className="flex justify-center items-center mt-auto w-full">
 						already have an account?{" "}
@@ -141,7 +144,7 @@ export default function Signup() {
 					</div>
 				</Form>
 			</div>
-			<Toaster richColors />
+			<Toaster richColors position="top-right" />
 		</>
 	)
 }
