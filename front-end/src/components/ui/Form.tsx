@@ -25,7 +25,7 @@ export default function Form({
 				noValidate
 				onSubmit={onsubmit}
 				className={cn(
-					"w-[min(100%,24rem)] min-h-[25rem] shadow-lg rounded-lg p-4",
+					"w-[min(100%,24rem)] min-h-[25rem] shadow-lg rounded-lg p-4 bg-slate-950",
 					className,
 				)}
 			>
@@ -47,8 +47,8 @@ export default function Form({
 					</div>
 				)}
 				{providers && (
-					<div className="border-t-2 relative mb-4">
-						<span className="absolute bg-white left-1/2 px-4 -translate-x-1/2 top-1/2 -translate-y-1/2">
+					<div className="border-t-2 relative mb-4 dark:border-slate-800">
+						<span className="absolute bg-white dark:bg-slate-950 left-1/2 px-4 -translate-x-1/2 top-1/2 -translate-y-1/2">
 							or
 						</span>
 					</div>

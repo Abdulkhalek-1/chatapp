@@ -1,8 +1,8 @@
 export default function ConfirmEmail() {
 	return (
 		<>
-			<div className="w-full h-full grid place-items-center px-2 bg-white">
-				<div className="w-[min(100%,24rem)] h-fit shadow-lg rounded-lg p-4">
+			<div className="w-full h-full grid place-items-center px-2 bg-white dark:bg-slate-900">
+				<div className="w-[min(100%,24rem)] h-fit shadow-lg rounded-lg p-4 dark:bg-slate-950">
 					<h1 className="w-full text-4xl font-bold mb-4">
 						verify your email address
 					</h1>

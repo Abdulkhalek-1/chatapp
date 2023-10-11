@@ -48,6 +48,12 @@ const router: RouteObject[] = [
 							},
 						],
 					},
+					{
+						path: ":friend",
+						element: (
+							<h1 className="md:block hidden">friend</h1>
+						),
+					},
 				],
 			},
 		],
