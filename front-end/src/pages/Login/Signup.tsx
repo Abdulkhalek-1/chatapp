@@ -86,7 +86,7 @@ export default function Signup() {
 	}
 	return (
 		<>
-			<div className="w-full h-full grid place-items-center px-2 bg-white">
+			<div className="w-full h-full grid place-items-center px-2 bg-white dark:bg-slate-900">
 				<Form title="signup" onsubmit={formHandler}>
 					<div className="flex flex-col gap-2 mb-4">
 						<Input title="username" type="text" />

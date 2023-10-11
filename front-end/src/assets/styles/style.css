@@ -55,9 +55,19 @@
     @apply h-[100vh];
   }
   body {
-    @apply w-full h-full bg-background text-foreground font-["Inter",sans-serif] bg-[#fafafa];
+    @apply dark:bg-slate-950 w-full h-full bg-background text-foreground font-["Inter",sans-serif] bg-[#fafafa];
   }
   #root {
     @apply w-full h-full;
+  }
+  ::-webkit-scrollbar {
+    @apply w-[6px];
+  }
+  ::-webkit-scrollbar-track {
+    border-radius: 20px;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-slate-600  hover:bg-slate-700;
+    border-radius: 20px;
   }
 }

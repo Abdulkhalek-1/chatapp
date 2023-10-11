@@ -13,7 +13,7 @@ export default function Login() {
 	}
 	return (
 		<>
-			<div className="w-full h-full grid place-items-center px-2 bg-white">
+			<div className="w-full h-full grid place-items-center px-2 bg-white dark:bg-slate-900">
 				<Form
 					title="login"
 					onsubmit={formHandler}

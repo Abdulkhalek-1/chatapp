@@ -10,7 +10,7 @@ export default function ResetPassword() {
 	}
 	return (
 		<>
-			<div className="w-full h-full grid place-items-center px-2 bg-white relative">
+			<div className="w-full h-full grid place-items-center px-2 bg-white relative dark:bg-slate-900">
 				<Form
 					className="min-h-fit"
 					title="reset password"
