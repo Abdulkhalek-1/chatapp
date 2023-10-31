@@ -1,12 +1,12 @@
-import * as React from "react"
+import * as React from "react";
 
-import { cn } from "@/lib/utils"
-import { Eye, EyeOff } from "lucide-react"
+import { cn } from "@/lib/utils";
+import { Eye, EyeOff } from "lucide-react";
 
 export interface InputProps
 	extends React.InputHTMLAttributes<HTMLInputElement> {
-	title?: string
-	errors?: string[]
+	title?: string;
+	errors?: string[];
 }
 
 export function Input({
@@ -16,10 +16,10 @@ export function Input({
 	errors = [],
 	...props
 }: InputProps) {
-	const isContainErrors = errors.length > 0
-	const id = React.useMemo(() => crypto.randomUUID(), [])
-	const inputRef = React.useRef<HTMLInputElement>(null)
-	const [show, setShow] = React.useState(false)
+	const isContainErrors = errors.length > 0;
+	const id = React.useMemo(() => crypto.randomUUID(), []);
+	const inputRef = React.useRef<HTMLInputElement>(null);
+	const [show, setShow] = React.useState(false);
 	return (
 		<div className="flex flex-col h-fit">
 			{title && (
@@ -66,7 +66,7 @@ export function Input({
 			</div>
 			<p className="text-red-600">{errors.join(", ")}</p>
 		</div>
-	)
+	);
 }
 
-Input.displayName = "Input"
+Input.displayName = "Input";

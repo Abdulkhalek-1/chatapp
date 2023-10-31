@@ -1,0 +1,34 @@
+[
+  {
+    "name": "ziad hatem",
+    "status": "online",
+    "img": "/imgs/profile.jpeg",
+    "id": "1",
+    "notifications": false,
+    "archive": false
+  },
+  {
+    "name": "Ahmed",
+    "status": "offline",
+    "img": "/imgs/ahmed.webp",
+    "id": "2",
+   "notifications": false,
+    "archive": false
+  },
+  {
+    "name": "عبد الخالق",
+    "status": "do not disturb",
+    "img": "/imgs/abd.webp",
+    "id": "3",
+    "notifications": true,
+    "archive": false
+  },
+  {
+    "name": "ahmed hossam",
+    "status": "online",
+    "img": "/imgs/hossam.webp",
+    "id": "4",
+    "notifications": false,
+    "archive": true
+  }
+]

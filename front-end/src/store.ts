@@ -1,5 +1,5 @@
-import { create } from "zustand"
-import { persist } from "zustand/middleware"
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
 const useTheme = create<ThemeType>()(
 	persist(
@@ -9,6 +9,6 @@ const useTheme = create<ThemeType>()(
 		}),
 		{ name: "theme" },
 	),
-)
+);
 
-export { useTheme }
+export { useTheme };
