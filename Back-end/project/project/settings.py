@@ -33,6 +33,8 @@ ALLOWED_HOSTS = ["*"]
 SITE_ID = 2
 
 INSTALLED_APPS = [
+    #? channels
+    "daphne",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -40,27 +42,26 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.contrib.sites",
-    # ? allauth
-    "allauth",
-    "allauth.account",
-    "allauth.socialaccount",
-    "allauth.socialaccount.providers.google",
+    # # ? allauth
+    # "allauth",
+    # "allauth.account",
+    # "allauth.socialaccount",
+    # "allauth.socialaccount.providers.google",
+    #? rest
+    'rest_framework',
     # ? apps
     "accounts",
+    "chat",
 ]
 
-SOCIALACCOUNT_PROVIDERS = {
-    "google": {
-        "SCOPE": [
-            "profile",
-            "email",
-        ],
-        "AUTH_PARAMS": {"access_type": "online"},
-    }
-}
+# SOCIALACCOUNT_PROVIDERS = {
+#     "google": {
+#         "SCOPE": ["profile", "email"],
+#         "AUTH_PARAMS": {"access_type": "online"},
+#     }
+# }
 
 MIDDLEWARE = [
-    "allauth.account.middleware.AccountMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -68,10 +69,10 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    
-    #? mine
+    # ? mine
     "django.contrib.sites.middleware.CurrentSiteMiddleware",
-    "project.middleware.AdminRestrictMiddleware",
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    # "project.middleware.AdminRestrictMiddleware",
 ]
 
 ROOT_URLCONF = "project.urls"
@@ -93,15 +94,26 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "project.wsgi.application"
-
+ASGI_APPLICATION = "project.asgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.postgresql",
+#         "NAME": "chatapp",
+#         "HOST": "localhost",
+#         "PORT": 5433,
+#         "USER": "postgres",
+#         "PASSWORD": "qkzxnvhb2005",
+#     }
+# }
+
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "NAME": "database.sqlite3",
     }
 }
 
@@ -132,9 +144,9 @@ LANGUAGE_CODE = "en-us"
 
 TIME_ZONE = "UTC"
 
-USE_I18N = True
+USE_I18N = False
 
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)
@@ -150,9 +162,34 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
-    "allauth.account.auth_backends.AuthenticationBackend",
+    # "allauth.account.auth_backends.AuthenticationBackend",
 ]
 
 
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer",
+    },
+}
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.SessionAuthentication',
+        # Add other authentication classes as needed
+    ),
+    
+}
+
+SESSION_ENGINE = "django.contrib.sessions.backends.db"
+
+SESSION_COOKIE_NAME = 'chatapp_session'
+
+# Base url to serve media files
+MEDIA_URL = '/media/'
+
+# Path where media is stored'
+MEDIA_ROOT = BASE_DIR / 'media'
