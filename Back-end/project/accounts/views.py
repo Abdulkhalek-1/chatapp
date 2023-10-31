@@ -1,4 +1,5 @@
 from django.contrib.auth import logout
+from django.db import IntegrityError
 from django.db.models import Q
 from rest_framework import generics, status
 from rest_framework.views import APIView
@@ -17,14 +18,34 @@ from .serializers import (
 from .models import UserProfile, FriendShip
 
 
+# class UserCreateView(generics.CreateAPIView):
+#     queryset = User.objects.all()
+#     serializer_class = UserRegisterSerializer
+
+#     def perform_create(self, serializer):
+#         user = serializer.save()
+#         user.set_password(serializer.validated_data["password"])
+#         user.save()
+#         login(self.request, user)  
+#         return Response({"detail": "User registered and logged in"}, status=status.HTTP_201_CREATED)
+
 class UserCreateView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserRegisterSerializer
 
     def perform_create(self, serializer):
-        user = serializer.save()
-        user.set_password(serializer.validated_data["password"])
-        user.save()
+        try:
+            user = serializer.save()
+            user.set_password(serializer.validated_data["password"])
+            user.save()
+            login(self.request, user)  # Log in the user after registration
+            return Response({"detail": "User registered and logged in"}, status=status.HTTP_201_CREATED)
+        except IntegrityError:
+            return Response({"detail": "User with the same username or email already exists"}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            # Handle other exceptions as needed
+            return Response({"detail": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 
 class UserProfileView(APIView):
