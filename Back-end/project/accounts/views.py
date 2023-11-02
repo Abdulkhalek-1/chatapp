@@ -26,8 +26,9 @@ from .models import UserProfile, FriendShip
 #         user = serializer.save()
 #         user.set_password(serializer.validated_data["password"])
 #         user.save()
-#         login(self.request, user)  
+#         login(self.request, user)
 #         return Response({"detail": "User registered and logged in"}, status=status.HTTP_201_CREATED)
+
 
 class UserCreateView(generics.CreateAPIView):
     queryset = User.objects.all()
@@ -39,19 +40,26 @@ class UserCreateView(generics.CreateAPIView):
             user.set_password(serializer.validated_data["password"])
             user.save()
             login(self.request, user)  # Log in the user after registration
-            return Response({"detail": "User registered and logged in"}, status=status.HTTP_201_CREATED)
+            return Response(
+                {"detail": "User registered and logged in"},
+                status=status.HTTP_201_CREATED,
+            )
         except IntegrityError:
-            return Response({"detail": "User with the same username or email already exists"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"detail": "User with the same username or email already exists"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
         except Exception as e:
             # Handle other exceptions as needed
-            return Response({"detail": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
+            return Response(
+                {"detail": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
 
 class UserProfileView(APIView):
     serializer_class = UserProfileSerializer
     permission_classes = [IsAuthenticated]
-    
+
     def get(self, request, id=None):
         if id is not None:
             try:
@@ -59,7 +67,10 @@ class UserProfileView(APIView):
                 serializer = self.serializer_class(user_profile)
                 return Response(serializer.data, status=status.HTTP_200_OK)
             except UserProfile.DoesNotExist:
-                return Response({"detail": "User profile not found"}, status=status.HTTP_404_NOT_FOUND)
+                return Response(
+                    {"detail": "User profile not found"},
+                    status=status.HTTP_404_NOT_FOUND,
+                )
         else:
             user_profile = UserProfile.objects.get(user=request.user)
             serializer = self.serializer_class(user_profile)
@@ -159,8 +170,9 @@ class FriendRequestsView(APIView):
 
     def put(self, request):
         id = request.data["id"]
+        profile = UserProfile.objects.get(id=id)
         try:
-            friend_request = FriendShip.objects.get(id=id)
+            friend_request = FriendShip.objects.get(sender=profile)
         except FriendShip.DoesNotExist:
             return Response(
                 {"detail": "Friend request not found"}, status=status.HTTP_404_NOT_FOUND

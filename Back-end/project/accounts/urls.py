@@ -1,7 +1,5 @@
 from django.urls import path, include
 from . import views
-from rest_framework.routers import DefaultRouter
-from django.contrib.auth.views import LoginView, LogoutView
 
 urlpatterns = [
   path('api/v1/users/register/', views.UserCreateView.as_view(), name='user-register'),

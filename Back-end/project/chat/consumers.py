@@ -1,33 +1,35 @@
 import json, time
 from . import models
 from channels.generic.websocket import AsyncWebsocketConsumer
+from channels.layers import get_channel_layer
+from channels.db import database_sync_to_async
 from asgiref.sync import sync_to_async
+from accounts.models import UserProfile
+from .models import ChatChannel
 
 
-class ChatMessageConsumer(AsyncWebsocketConsumer):
+class NotificationConsumer(AsyncWebsocketConsumer):
     async def connect(self):
-        self.receiver_id = self.scope["url_route"]["kwargs"]["receiver_id"]
-        self.chat_room = f"user_{self.receiver_id}"
-        await self.channel_layer.group_add(self.chat_room, self.channel_name)
-        #! Check frind
-        await self.accept()
+        user = self.scope["user"]
+        if user.is_anonymous:
+            await self.close()
+        else:
+            await self.accept()
+            await self.add_user_to_channels(user)
 
-    async def receive(self, text_data):
-        print(text_data)
-        await self.channel_layer.group_send(
-            self.chat_room,
-            {
-                "type": "send_message",
-                "message": text_data,
-            },
-        )
+    def get_user_profile(self, user):
+        return UserProfile.objects.get(user=user)
 
-    async def send_message(self, event):
-        # send message to SebSocket (front-end)
-        await self.send(
-            text_data=json.dumps(
-                {
-                    "message": event["message"],
-                }
-            )
-        )
+    def get_channels(self, user_profile):
+        return ChatChannel.objects.filter(members=user_profile)
+
+    async def add_user_to_channels(self, user):
+        user_profile = await database_sync_to_async(self.get_user_profile)(user)
+        channels = await database_sync_to_async(self.get_channels)(user_profile)
+
+        async for channel in channels:
+            print(channel.id)
+            await self.channel_layer.group_add(f"group_{channel.id}", self.channel_name)
+
+    async def receive(self, text_data=None, bytes_data=None):
+        return await super().receive(text_data, bytes_data)
