@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div id="test" style="color: red; font-size: 250px"></div>
+    <script>
+      // const response = await fetch("https://reqbin.com/echo/post/json", {
+      // method: 'POST',
+      // headers: {
+      // 'Accept': 'application/json',
+      // 'Content-Type': 'application/json'
+      // },
+      // body: `{
+      //    "username": "asdkhi234",
+      //    "email": "asdkhi234@gmail.com",
+      //    "password": "asdkhi234edas132",
+      //    "password_confirm": "asdkhi234edas132",
+      //    "first_name": "asdasfdg",
+      //    "last_name": "dsfgfghgfh"
+      // }`,
+      // });
+
+      // response.json().then(data => {
+      // console.log(JSON.stringify(data));
+      // });
+
+      fetch("http://127.0.0.1:8000/api/v1/users/register/", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json", // Add a comma here
+        },
+        body: JSON.stringify({
+          username: "asdkhi234",
+          email: "asdkhi234@gmail.com",
+          password: "asdkhi234edas132",
+          password_confirm: "asdkhi234edas132",
+          first_name: "asdasfdg",
+          last_name: "dsfgfghgfh",
+        }),
+      })
+        .then((response) => response.json())
+        .then((data) => console.log(data))
+        .catch((error) => console.error("Fetch Error:", error));
+    </script>
+  </body>
+</html>

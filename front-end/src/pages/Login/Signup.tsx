@@ -7,12 +7,11 @@ import { Link } from "react-router-dom";
 import Form from "@/components/ui/Form";
 import useValidate from "@/hooks/useValidate";
 import axios from "axios";
-
-const baseAPI = axios.create({ baseURL: "http://0.0.0.0:8000" });
-
 axios.defaults.xsrfCookieName = "csrftoken";
 axios.defaults.xsrfHeaderName = "X-CSRFToken";
 axios.defaults.withCredentials = true;
+
+const baseAPI = axios.create({ baseURL: import.meta.env.VITE_API_URL });
 import { AxiosError } from "axios";
 
 export default function Signup() {
@@ -93,9 +92,9 @@ export default function Signup() {
 
     setFirstSubmit(false);
     if (success) {
-      setFormLoading(true);
-      try {
-        await baseAPI.post("api/v1/users/register/", {
+    setFormLoading(true);
+    try {
+      await baseAPI.post("api/v1/users/register/", {
           username: usernameValue,
           email: emailValue,
           password: passwordValue,
@@ -103,14 +102,13 @@ export default function Signup() {
           first_name: firstNameValue,
           last_name: lastNameValue,
         });
-        setFormLoading(false);
-      } catch (error) {
-        setFormLoading(false);
-        console.log(error);
-        toast.error((error as AxiosError).message);
-      }
-    } else {
-      toast.error("authentication failed");
+      setFormLoading(false);
+    } catch (error) {
+      setFormLoading(false);
+      console.log(error);
+      toast.error((error as AxiosError).message);
+    }
+    } else {     toast.error("authentication failed");
     }
   }
 

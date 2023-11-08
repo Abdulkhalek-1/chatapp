@@ -6,6 +6,7 @@ import { Outlet, useLoaderData, useLocation } from "react-router-dom";
 import { useDarkMode } from "usehooks-ts";
 import Friends from "@/components/friends/Friends";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
+import { useEffect } from "react";
 
 const queryClient = new QueryClient();
 
@@ -16,6 +17,11 @@ export default function RootLayout() {
   };
   const { toggle, isDarkMode } = useDarkMode();
   document.querySelector("html")?.classList.toggle("dark", isDarkMode);
+  useEffect(() => {
+    window.addEventListener("contextmenu", (e) => {
+      e.preventDefault();
+    });
+  }, []);
   // check if the user authenticated
   if (location.pathname.startsWith("/accounts")) return <Outlet />;
   return (
