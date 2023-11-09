@@ -1,14 +1,1 @@
-import requests
-
-
-data = {
-    "username": "test1123",
-    "email": "test1123@gmail.com",
-    "password": "aHgr52eG0i0hm@",
-    "password_confirm": "aHgr52eG0i0hm@",
-    "first_name": "adsdfgdsf",
-    "last_name": "fhjghjrtyhf"
-}
-r = requests.post("http://127.0.0.1:8000/api/v1/users/register/", data=data)
-
-print(r.text)
+print(copyright)

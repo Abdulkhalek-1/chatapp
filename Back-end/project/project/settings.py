@@ -25,7 +25,7 @@ SECRET_KEY = "django-insecure-6tc8bh@e@cdcp1z=dq4#l^=tp^e1qd3+eqe@ah#$*eo-h_0xnw
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ["*"]  #!!!!!!!!!!!
 
 
 # Application definition
@@ -33,7 +33,7 @@ ALLOWED_HOSTS = ["*"]
 SITE_ID = 2
 
 INSTALLED_APPS = [
-    #? channels
+    # ? channels
     "daphne",
     "django.contrib.admin",
     "django.contrib.auth",
@@ -47,13 +47,12 @@ INSTALLED_APPS = [
     # "allauth.account",
     # "allauth.socialaccount",
     # "allauth.socialaccount.providers.google",
-    #? rest
-    'rest_framework',
+    # ? rest
+    "rest_framework",
     # ? apps
     "accounts",
     "chat",
-    
-    'corsheaders',
+    # "corsheaders",
 ]
 
 # SOCIALACCOUNT_PROVIDERS = {
@@ -67,37 +66,18 @@ MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
-    "django.middleware.csrf.CsrfViewMiddleware",
+    # "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     # ? mine
     "django.contrib.sites.middleware.CurrentSiteMiddleware",
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    # "project.middleware.AdminRestrictMiddleware",
-    'corsheaders.middleware.CorsMiddleware',
+    "project.middleware.AdminRestrictMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
 ]
 
-CORS_ALLOW_ALL_ORIGINS = True
 
-CORS_ALLOW_CREDENTIALS = True
-
-CORS_ALLOW_METHODS = ['GET', 'POST', 'PUT', 'DELETE']
-
-CORS_ALLOW_HEADERS = [
-    'Accept',
-    'Accept-Encoding',
-    'Content-Type',
-    'Authorization',
-    'Access-Control-Allow-Origin'
-]
-
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost:3000',
-    'http://127.0.0.1:3000',
-]
-
-APPEND_SLASH = False
+# APPEND_SLASH = True
 
 
 ROOT_URLCONF = "project.urls"
@@ -202,18 +182,35 @@ CHANNEL_LAYERS = {
 
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.SessionAuthentication',
-        # Add other authentication classes as needed
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework.authentication.SessionAuthentication",
     ),
+    "DEFAULT_PERMISSIONS_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
 }
 
 SESSION_ENGINE = "django.contrib.sessions.backends.db"
-
-SESSION_COOKIE_NAME = 'chatapp_session'
+SESSION_COOKIE_SECURE = True
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SAMESITE = "strict"
+SESSION_COOKIE_NAME = "sessionid"
+# SESSION_SAVE_EVERY_REQUEST = True
 
 # Base url to serve media files
-MEDIA_URL = '/media/'
+MEDIA_URL = "/media/"
 
 # Path where media is stored'
-MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_ROOT = BASE_DIR / "media"
+
+# ? CORS
+
+CORS_ALLOW_ALL_ORIGINS = True  #!!!!!
+
+CORS_ALLOW_CREDENTIALS = True
+
+CORS_ALLOW_METHODS = ["GET", "POST", "PUT", "DELETE", "PATCH"]
+
+# CORS_ALLOWED_ORIGINS = [
+#     "http://192.168.1.8:5500",
+#     "http://192.168.1.8:5500/",
+#     # "https://127.0.0.1",
+# ]
