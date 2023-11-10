@@ -6,11 +6,7 @@ from django.contrib.auth.models import (
 from django.contrib.auth.models import (
     AbstractUser,
 )
-from django.contrib.auth.models import (
-    AbstractBaseUser,
-    BaseUserManager,
-    PermissionsMixin,
-)
+from django.core.exceptions import ValidationError
 
 
 class FriendShip(models.Model):
@@ -50,6 +46,7 @@ class FriendShip(models.Model):
         return f"{self.sender}-{self.receiver}-{self.status}"
 
 
+
 class UserProfile(models.Model):
     user = models.OneToOneField(
         User,
@@ -63,7 +60,7 @@ class UserProfile(models.Model):
     bio = models.TextField()
     picture = models.ImageField(
         upload_to=r"profiles/",
-        default=r"profiles/default.png",
+        default=r"profiles/default.png"
     )
 
     def __str__(self):

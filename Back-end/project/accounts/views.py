@@ -3,7 +3,6 @@ from django.db import IntegrityError
 from rest_framework import (
     generics,
     status,
-    viewsets,
 )
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -54,14 +53,9 @@ class UserCreateView(generics.CreateAPIView):
             )
 
 
+
 class UserProfileView(APIView):
     permission_classes = [IsAuthenticated]
-
-    # def get_serializer_class(self):
-    #     if self.request.method == "PATCH":
-    #         return UserProfileEditSerializer
-    #     else:
-    #         return UserProfileSerializer
 
     def get(self, request, *args, **kwargs):
         id = self.request.query_params.get("id")

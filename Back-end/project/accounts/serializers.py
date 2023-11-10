@@ -14,6 +14,7 @@ from django.contrib.auth import (
 from django.core.exceptions import (
     ValidationError,
 )
+from django.core.validators import FileExtensionValidator
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -134,8 +135,15 @@ class UserProfileSerializer(serializers.ModelSerializer):
         return friend_data
 
 
+def validate_file_size(value):
+    max_size = 5 * 1024 * 1024
+    if value.size > max_size:
+        raise ValidationError("Large File Size")
+
+
 class UserProfileEditSerializer(serializers.ModelSerializer):
     user = UserSerializer(required=False)
+    picture = serializers.ImageField(validators=[validate_file_size])
 
     class Meta:
         model = UserProfile
