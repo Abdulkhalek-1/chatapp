@@ -72,7 +72,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     # ? mine
     "django.contrib.sites.middleware.CurrentSiteMiddleware",
-    "project.middleware.AdminRestrictMiddleware",
+    # "project.middleware.AdminRestrictMiddleware",
     "corsheaders.middleware.CorsMiddleware",
 ]
 

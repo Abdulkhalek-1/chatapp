@@ -27,17 +27,6 @@ from .serializers import (
 )
 from .models import UserProfile, FriendShip
 
-# class UserCreateView(generics.CreateAPIView):
-#     queryset = User.objects.all()
-#     serializer_class = UserRegisterSerializer
-
-#     def perform_create(self, serializer):
-#         user = serializer.save()
-#         user.set_password(serializer.validated_data["password"])
-#         user.save()
-#         login(self.request, user)
-#         return Response({"detail": "User registered and logged in"}, status=status.HTTP_201_CREATED)
-
 
 class UserCreateView(generics.CreateAPIView):
     queryset = User.objects.all()
@@ -46,30 +35,19 @@ class UserCreateView(generics.CreateAPIView):
     def perform_create(self, serializer):
         try:
             user = serializer.save()
-            user.set_password(
-                serializer.validated_data[
-                    "password"
-                ]
-            )
+            user.set_password(serializer.validated_data["password"])
             user.save()
-            login(
-                self.request, user
-            )  # Log in the user after registration
+            login(self.request, user)  # Log in the user after registration
             return Response(
-                {
-                    "detail": "User registered and logged in"
-                },
+                {"detail": "User registered and logged in"},
                 status=status.HTTP_201_CREATED,
             )
         except IntegrityError:
             return Response(
-                {
-                    "detail": "User with the same username or email already exists"
-                },
+                {"detail": "User with the same username or email already exists"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
         except Exception as e:
-            # Handle other exceptions as needed
             return Response(
                 {"detail": str(e)},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -79,50 +57,37 @@ class UserCreateView(generics.CreateAPIView):
 class UserProfileView(APIView):
     permission_classes = [IsAuthenticated]
 
-    def get_serializer_class(self):
-        if self.request.method == "PATCH":
-            return UserProfileEditSerializer
-        else:
-            return UserProfileSerializer
+    # def get_serializer_class(self):
+    #     if self.request.method == "PATCH":
+    #         return UserProfileEditSerializer
+    #     else:
+    #         return UserProfileSerializer
 
-    def get(self, request, id=None):
+    def get(self, request, *args, **kwargs):
+        id = self.request.query_params.get("id")
         if id is not None:
             try:
-                user_profile = (
-                    UserProfile.objects.get(id=id)
-                )
-                serializer = (
-                    UserProfileSerializer(
-                        user_profile
-                    )
-                )
+                user_profile = UserProfile.objects.get(id=id)
+                serializer = UserProfileSerializer(user_profile)
                 return Response(
                     serializer.data,
                     status=status.HTTP_200_OK,
                 )
             except UserProfile.DoesNotExist:
                 return Response(
-                    {
-                        "detail": "User profile not found"
-                    },
+                    {"detail": "User profile not found"},
                     status=status.HTTP_404_NOT_FOUND,
                 )
         else:
-            user_profile = (
-                self.request.user.userprofile
-            )
-            serializer = UserProfileSerializer(
-                user_profile
-            )
+            user_profile = self.request.user.userprofile
+            serializer = UserProfileSerializer(user_profile)
             return Response(
                 serializer.data,
                 status=status.HTTP_200_OK,
             )
 
     def patch(self, request, *args, **kwargs):
-        user_profile = (
-            self.request.user.userprofile
-        )
+        user_profile = self.request.user.userprofile
 
         serializer = UserProfileEditSerializer(
             user_profile,
@@ -145,16 +110,10 @@ class UserLoginView(APIView):
     permission_classes = (AllowAny,)
 
     def post(self, request):
-        serializer = UserLoginSerializer(
-            data=request.data
-        )
+        serializer = UserLoginSerializer(data=request.data)
         if serializer.is_valid():
-            username = serializer.validated_data[
-                "username"
-            ]
-            password = serializer.validated_data[
-                "password"
-            ]
+            username = serializer.validated_data["username"]
+            password = serializer.validated_data["password"]
             user = authenticate(
                 request,
                 username=username,
@@ -168,9 +127,7 @@ class UserLoginView(APIView):
                 )
             else:
                 return Response(
-                    {
-                        "error": "Invalid credentials"
-                    },
+                    {"error": "Invalid credentials"},
                     status=status.HTTP_401_UNAUTHORIZED,
                 )
         return Response(
@@ -193,25 +150,17 @@ class UserLogoutView(APIView):
         )
 
 
-class SendFriendRequestView(
-    generics.CreateAPIView
-):
+class SendFriendRequestView(generics.CreateAPIView):
     queryset = FriendShip.objects.all()
     serializer_class = SendFriendRequestSerializer
     permission_classes = [IsAuthenticated]
 
     def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(
-            data=request.data
-        )
+        serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
             user = self.request.user
-            sender = UserProfile.objects.get(
-                user=user
-            )
-            receiver = serializer.validated_data[
-                "receiver"
-            ]
+            sender = UserProfile.objects.get(user=user)
+            receiver = serializer.validated_data["receiver"]
 
             # Check if there's an existing friend request
             existing_request = (
@@ -227,43 +176,31 @@ class SendFriendRequestView(
 
             if sender == receiver:
                 return Response(
-                    {
-                        "detail": "Can't send friend request to yourself"
-                    },
+                    {"detail": "Can't send friend request to yourself"},
                     status=status.HTTP_406_NOT_ACCEPTABLE,
                 )
 
             if existing_request:
-                request_status = (
-                    existing_request.status
-                )
+                request_status = existing_request.status
                 if request_status == "accepted":
                     return Response(
-                        {
-                            "detail": "Friend already Exists"
-                        },
+                        {"detail": "Friend already Exists"},
                         status=status.HTTP_406_NOT_ACCEPTABLE,
                     )
                 elif request_status == "waiting":
                     return Response(
-                        {
-                            "detail": "Friend request already sent"
-                        },
+                        {"detail": "Friend request already sent"},
                         status=status.HTTP_406_NOT_ACCEPTABLE,
                     )
                 elif request_status == "rejected":
                     return Response(
-                        {
-                            "detail": "Friend request rejected"
-                        },
+                        {"detail": "Friend request rejected"},
                         status=status.HTTP_406_NOT_ACCEPTABLE,
                     )
             else:
                 serializer.save(sender=sender)
                 return Response(
-                    {
-                        "detail": "Friend Request Sent"
-                    },
+                    {"detail": "Friend Request Sent"},
                     status=status.HTTP_201_CREATED,
                 )
 
@@ -279,14 +216,8 @@ class FriendRequestsView(APIView):
 
     def get(self, request):
         user = self.request.user
-        profile = UserProfile.objects.get(
-            user=user
-        )
-        friend_requests = (
-            FriendShip.objects.filter(
-                receiver=profile, status="waiting"
-            )
-        )
+        profile = UserProfile.objects.get(user=user)
+        friend_requests = FriendShip.objects.filter(receiver=profile, status="waiting")
 
         # Pass the request context to the serializer
         serializer = self.serializer_class(
@@ -303,41 +234,54 @@ class FriendRequestsView(APIView):
         id = request.data["id"]
         profile = UserProfile.objects.get(id=id)
         try:
-            friend_request = (
-                FriendShip.objects.get(
-                    sender=profile
-                )
-            )
+            friend_request = FriendShip.objects.get(sender=profile)
         except FriendShip.DoesNotExist:
             return Response(
-                {
-                    "detail": "Friend request not found"
-                },
+                {"detail": "Friend request not found"},
                 status=status.HTTP_404_NOT_FOUND,
             )
 
-        receiver_profile = (
-            UserProfile.objects.get(
-                user=request.user
-            )
-        )
+        receiver_profile = UserProfile.objects.get(user=request.user)
         if (
-            friend_request.receiver
-            == receiver_profile
+            friend_request.receiver == receiver_profile
             and friend_request.status == "waiting"
         ):
             friend_request.status = "accepted"
             friend_request.save()
             return Response(
-                {
-                    "detail": "Friend request accepted"
-                },
+                {"detail": "Friend request accepted"},
                 status=status.HTTP_200_OK,
             )
 
         return Response(
-            {
-                "detail": "Friend request cannot be accepted"
-            },
+            {"detail": "Friend request cannot be accepted"},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    def delete(self, request):
+        id = request.data["id"]
+        profile = UserProfile.objects.get(id=id)
+        try:
+            friend_request = FriendShip.objects.get(sender=profile)
+        except FriendShip.DoesNotExist:
+            return Response(
+                {"detail": "Friend request not found"},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        receiver_profile = UserProfile.objects.get(user=request.user)
+        if (
+            friend_request.receiver == receiver_profile
+            and friend_request.status == "waiting"
+        ):
+            friend_request.status = "rejected"
+            friend_request.save()
+            return Response(
+                {"detail": "Friend request rejected"},
+                status=status.HTTP_200_OK,
+            )
+
+        return Response(
+            {"detail": "Friend request cannot be rejected"},
             status=status.HTTP_400_BAD_REQUEST,
         )

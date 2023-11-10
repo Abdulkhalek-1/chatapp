@@ -17,16 +17,6 @@ urlpatterns = [
         name="user-register",
     ),
     path(
-        "api/v1/users/profile/<int:id>/",
-        views.UserProfileView.as_view(),
-        name="user-profile",
-    ),
-    path(
-        "api/v1/users/profile/",
-        views.UserProfileView.as_view(),
-        name="user-profile",
-    ),
-    path(
         "api/v1/users/login/",
         views.UserLoginView.as_view(),
         name="user-login",
@@ -37,14 +27,24 @@ urlpatterns = [
         name="user-logout",
     ),
     path(
-        "api/v1/users/friends/add/",
-        views.SendFriendRequestView.as_view(),
-        name="user-add-friend",
+        "api/v1/users/profile/<int:id>/",
+        views.UserProfileView.as_view(),
+        name="user-profile",
+    ),
+    path(
+        "api/v1/users/profile/",
+        views.UserProfileView.as_view(),
+        name="user-profile",
     ),
     path(
         "api/v1/users/friends/",
         views.FriendRequestsView.as_view(),
         name="user-friend-requests",
+    ),
+    path(
+        "api/v1/users/friends/add/",
+        views.SendFriendRequestView.as_view(),
+        name="user-add-friend",
     ),
     path(
         "api/v1/users/friends/<int:id>",
