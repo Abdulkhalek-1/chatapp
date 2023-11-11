@@ -208,8 +208,11 @@ CORS_ALLOW_CREDENTIALS = True
 
 CORS_ALLOW_METHODS = ["GET", "POST", "PUT", "DELETE", "PATCH"]
 
-# CORS_ALLOWED_ORIGINS = [
-#     "http://192.168.1.8:5500",
-#     "http://192.168.1.8:5500/",
-#     # "https://127.0.0.1",
-# ]
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+]
+
+CSRF_TRUSTED_ORIGINS = (["http://localhost:8000"],)
+CORS_ORIGIN_WHITELIST = [
+    "http://localhost:8000",
+]
