@@ -1,29 +1,23 @@
 import { Navigate, RouteObject } from "react-router-dom";
 import RootLayout from "./layouts/RootLayout";
 import ErrorPage from "./pages/ErrorPage";
-import Chats from "./pages/chats/Chats";
 import Login from "./pages/Login/Login";
 import Signup from "./pages/Login/Signup";
 import ResetPassword from "./pages/Login/ResetPassword";
 import ConfirmEmail from "./pages/Login/ConfirmEmail";
 import Reauthenticate from "./pages/Login/Reauthenticate";
 import Chat from "./pages/chats/components/chat/Chat";
-import { getJSONData } from "./utils/getJSONData";
-import Archive from "@/pages/archive/Archive";
+import Profile from "./pages/chats/Profile/Profile";
 
 const router: RouteObject[] = [
   {
     path: "/",
     element: <RootLayout />,
-    loader: () => {
-      const friends = getJSONData<FriendType[]>("/data/friends.json");
-      return { friendsPromise: friends };
-    },
     children: [
       {
         errorElement: <ErrorPage />,
         children: [
-          { index: true, element: <Chats /> },
+          { index: true, element: <Navigate to="/chats" /> },
           {
             path: "accounts",
             children: [
@@ -53,6 +47,7 @@ const router: RouteObject[] = [
                 path: "reauthenticate",
                 element: <Reauthenticate />,
               },
+              { path: "profile", element: <Profile /> },
             ],
           },
           {

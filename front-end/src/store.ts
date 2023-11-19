@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { dummyUserData } from "./constants";
 
 const useTheme = create<ThemeType>()(
 	persist(
@@ -11,4 +12,14 @@ const useTheme = create<ThemeType>()(
 	),
 );
 
-export { useTheme };
+type useUserDataType = { authenticated: boolean } & ProfileType;
+const useUserData = create<
+	useUserDataType & {
+		setUserData: (userData: useUserDataType) => void;
+	}
+>()((set) => ({
+	authenticated: false,
+	...dummyUserData,
+	setUserData: (userData: useUserDataType) => set(() => userData),
+}));
+export { useTheme, useUserData };
