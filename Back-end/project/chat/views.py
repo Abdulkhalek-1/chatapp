@@ -1,3 +1,4 @@
+from django.http import HttpResponse
 from django.shortcuts import render
 from django.db.models import Q
 from rest_framework.views import APIView
@@ -6,13 +7,17 @@ from rest_framework.response import Response
 from rest_framework import generics, status, viewsets
 import datetime
 from .serializers import MessageSerializer, MessageCreateSerializer
-from .models import Message, ChatChannel
+from .models import Message, ChatChannel, Reaction
 from accounts.models import UserProfile
 
 
-# Create your views here.
+from django.core.exceptions import ValidationError
 def test(request):
-    return render(request, "test.html")
+    try:
+        Reaction.objects.create(emoji="asd")
+        return HttpResponse("done")
+    except ValidationError as e:
+        return HttpResponse("error")
 
 
 class MessagesView(APIView):

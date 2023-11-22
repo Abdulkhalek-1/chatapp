@@ -53,15 +53,19 @@ class UserCreateView(generics.CreateAPIView):
             )
 
 
-
 class UserProfileView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, *args, **kwargs):
         id = self.request.query_params.get("id")
-        if id is not None:
+        username = self.request.query_params.get("un")
+        if id is not None or username is not None:
             try:
-                user_profile = UserProfile.objects.get(id=id)
+                if id is not None:
+                    user_profile = UserProfile.objects.get(id=id)
+                else:
+                    user_profile = UserProfile.objects.get(user__username=username)
+
                 serializer = UserProfileSerializer(user_profile)
                 return Response(
                     serializer.data,
@@ -152,8 +156,7 @@ class SendFriendRequestView(generics.CreateAPIView):
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
-            user = self.request.user
-            sender = UserProfile.objects.get(user=user)
+            sender = self.request.user.userprofile
             receiver = serializer.validated_data["receiver"]
 
             # Check if there's an existing friend request
