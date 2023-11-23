@@ -42,8 +42,6 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.contrib.sites",
-    # ? database
-    "django_cassandra_engine",
     # ? allauth
     # "allauth",
     # "allauth.account",
@@ -54,6 +52,7 @@ INSTALLED_APPS = [
     # ? apps
     "accounts",
     "chat",
+    "drf_yasg",
     # "corsheaders",
 ]
 
@@ -77,9 +76,6 @@ MIDDLEWARE = [
     # "project.middleware.AdminRestrictMiddleware",
     "corsheaders.middleware.CorsMiddleware",
 ]
-
-
-# APPEND_SLASH = True
 
 
 ROOT_URLCONF = "project.urls"
@@ -185,6 +181,13 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework.authentication.SessionAuthentication",
     ],
+    "DEFAULT_SCHEMA_CLASS": "rest_framework.schemas.coreapi.AutoSchema",
+}
+
+SWAGGER_SETTINGS = {
+    "USE_SESSION_AUTH": True,
+    "LOGOUT_URL": "/api/v1/users/logout/",
+    "LOGIN_URL": "/api/v1/users/login/",
 }
 
 
@@ -218,5 +221,3 @@ CSRF_TRUSTED_ORIGINS = ("http://localhost", "http://localhost")
 #     "http://localhost:8000",
 #     "http://localhost:5173",
 # ]
-
-

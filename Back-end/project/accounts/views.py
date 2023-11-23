@@ -25,6 +25,8 @@ from .serializers import (
     UserProfileEditSerializer,
 )
 from .models import UserProfile, FriendShip
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
 
 
 class UserCreateView(generics.CreateAPIView):
@@ -56,7 +58,27 @@ class UserCreateView(generics.CreateAPIView):
 class UserProfileView(APIView):
     permission_classes = [IsAuthenticated]
 
+    @swagger_auto_schema(
+        manual_parameters=[
+            openapi.Parameter(
+                "un",
+                openapi.IN_QUERY,
+                description="username to get profile",
+                type=openapi.TYPE_STRING,
+            ),
+            openapi.Parameter(
+                "id",
+                openapi.IN_QUERY,
+                description="user ID to get profile",
+                type=openapi.TYPE_INTEGER,
+            ),
+        ]
+    )
     def get(self, request, *args, **kwargs):
+        """
+        get user profile using username or user id
+        or get user current profile
+        """
         id = self.request.query_params.get("id")
         username = self.request.query_params.get("un")
         if id is not None or username is not None:
@@ -84,7 +106,9 @@ class UserProfileView(APIView):
                 status=status.HTTP_200_OK,
             )
 
+    @swagger_auto_schema()
     def patch(self, request, *args, **kwargs):
+        """Edit user profile"""
         user_profile = self.request.user.userprofile
 
         serializer = UserProfileEditSerializer(
@@ -107,7 +131,9 @@ class UserProfileView(APIView):
 class UserLoginView(APIView):
     permission_classes = (AllowAny,)
 
+    @swagger_auto_schema()
     def post(self, request):
+        """login"""
         serializer = UserLoginSerializer(data=request.data)
         if serializer.is_valid():
             username = serializer.validated_data["username"]
@@ -133,14 +159,13 @@ class UserLoginView(APIView):
             status=status.HTTP_400_BAD_REQUEST,
         )
 
-    def get(self, request, *args, **kwargs):
-        return Response({})
-
 
 class UserLogoutView(APIView):
     permission_classes = [IsAuthenticated]
 
+    @swagger_auto_schema()
     def get(self, request):
+        """logout"""
         logout(request)
         return Response(
             {"message": "logged out"},
@@ -153,7 +178,9 @@ class SendFriendRequestView(generics.CreateAPIView):
     serializer_class = SendFriendRequestSerializer
     permission_classes = [IsAuthenticated]
 
-    def create(self, request, *args, **kwargs):
+    @swagger_auto_schema()
+    def post(self, request, *args, **kwargs):
+        """send friend request to user with id"""
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
             sender = self.request.user.userprofile
@@ -211,7 +238,9 @@ class FriendRequestsView(APIView):
     serializer_class = FriendRequestsSerializer
     permission_classes = [IsAuthenticated]
 
+    @swagger_auto_schema()
     def get(self, request):
+        """get user friend requests"""
         user = self.request.user
         profile = UserProfile.objects.get(user=user)
         friend_requests = FriendShip.objects.filter(receiver=profile, status="waiting")
@@ -227,11 +256,20 @@ class FriendRequestsView(APIView):
             status=status.HTTP_200_OK,
         )
 
+    @swagger_auto_schema(
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                "id": openapi.Schema(type=openapi.TYPE_INTEGER),
+            },
+        ),
+        responses={},
+    )
     def put(self, request):
-        id = request.data["id"]
-        profile = UserProfile.objects.get(id=id)
+        """accept friend request with id"""
+        id = request.data.get("id")
         try:
-            friend_request = FriendShip.objects.get(sender=profile)
+            friend_request = FriendShip.objects.get(pk=id)
         except FriendShip.DoesNotExist:
             return Response(
                 {"detail": "Friend request not found"},
@@ -255,11 +293,20 @@ class FriendRequestsView(APIView):
             status=status.HTTP_400_BAD_REQUEST,
         )
 
+    @swagger_auto_schema(
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                "id": openapi.Schema(type=openapi.TYPE_INTEGER),
+            },
+        ),
+        responses={},
+    )
     def delete(self, request):
-        id = request.data["id"]
-        profile = UserProfile.objects.get(id=id)
+        """reject friend request with id"""
+        id = request.data.get("id")
         try:
-            friend_request = FriendShip.objects.get(sender=profile)
+            friend_request = FriendShip.objects.get(pk=id)
         except FriendShip.DoesNotExist:
             return Response(
                 {"detail": "Friend request not found"},

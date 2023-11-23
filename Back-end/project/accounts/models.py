@@ -46,7 +46,6 @@ class FriendShip(models.Model):
         return f"{self.sender}-{self.receiver}-{self.status}"
 
 
-
 class UserProfile(models.Model):
     user = models.OneToOneField(
         User,
@@ -58,10 +57,7 @@ class UserProfile(models.Model):
         blank=True,
     )
     bio = models.TextField()
-    picture = models.ImageField(
-        upload_to=r"profiles/",
-        default=r"profiles/default.png"
-    )
+    picture = models.ImageField(upload_to=r"profiles/", default=r"profiles/default.png")
 
     def __str__(self):
         return f"@{self.user.username}"

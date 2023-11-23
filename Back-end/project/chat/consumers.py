@@ -32,4 +32,6 @@ class NotificationConsumer(AsyncWebsocketConsumer):
             await self.channel_layer.group_add(f"group_{channel.id}", self.channel_name)
 
     async def receive(self, text_data=None, bytes_data=None):
+        print(text_data)
+        print([q for q in self.scope["user"]])
         return await super().receive(text_data, bytes_data)
