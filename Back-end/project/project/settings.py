@@ -42,7 +42,9 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.contrib.sites",
-    # # ? allauth
+    # ? database
+    "django_cassandra_engine",
+    # ? allauth
     # "allauth",
     # "allauth.account",
     # "allauth.socialaccount",
@@ -121,7 +123,6 @@ DATABASES = {
         "NAME": "database.sqlite3",
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
@@ -208,10 +209,19 @@ CORS_ALLOW_CREDENTIALS = True
 
 CORS_ALLOW_METHODS = ["GET", "POST", "PUT", "DELETE", "PATCH"]
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",
-]
+# CORS_ALLOWED_ORIGINS = [
+#     "http://localhost:5173",
+# ]
 
+CSRF_TRUSTED_ORIGINS = ("http://localhost", "http://localhost")
+# CORS_ORIGIN_WHITELIST = [
+#     "http://localhost:8000",
+#     "http://localhost:5173",
+# ]
+
+
+<<<<<<< HEAD
+=======
 CSRF_TRUSTED_ORIGINS = (
     "http://localhost:8000",
     "http://localhost:5173",
@@ -220,3 +230,4 @@ CORS_ORIGIN_WHITELIST = [
     "http://localhost:8000",
     "http://localhost:5173",
 ]
+>>>>>>> frontend
