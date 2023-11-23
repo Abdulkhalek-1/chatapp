@@ -213,21 +213,13 @@ CORS_ALLOW_METHODS = ["GET", "POST", "PUT", "DELETE", "PATCH"]
 #     "http://localhost:5173",
 # ]
 
-CSRF_TRUSTED_ORIGINS = ("http://localhost", "http://localhost")
 # CORS_ORIGIN_WHITELIST = [
 #     "http://localhost:8000",
 #     "http://localhost:5173",
 # ]
 
 
-<<<<<<< HEAD
-=======
 CSRF_TRUSTED_ORIGINS = (
     "http://localhost:8000",
     "http://localhost:5173",
 )
-CORS_ORIGIN_WHITELIST = [
-    "http://localhost:8000",
-    "http://localhost:5173",
-]
->>>>>>> frontend
