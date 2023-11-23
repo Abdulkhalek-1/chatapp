@@ -6,9 +6,9 @@ import { toast } from "sonner";
 import { Link, useNavigate } from "react-router-dom";
 import Form from "@/components/ui/Form";
 import useValidate from "@/hooks/useValidate";
-import { AxiosError } from "axios";
+import { AxiosError, AxiosResponse } from "axios";
 import baseAPI from "@/api/base";
-import getCookie from "@/utils/getCookie";
+import { useUserData } from "@/store";
 export default function Signup() {
 	const [firstSubmit, setFirstSubmit] = useState(true);
 	const [emailValue, setEmailValue] = useState("");
@@ -19,6 +19,7 @@ export default function Signup() {
 	const [lastNameValue, setLastNameValue] = useState("");
 	const [formLoading, setFormLoading] = useState(false);
 	const navigate = useNavigate();
+	const setUserData = useUserData((store) => store.setUserData);
 	const { success, getErrorsFrom } = useValidate(
 		{
 			email: z.string().email().includes("@gmail"),
@@ -90,24 +91,17 @@ export default function Signup() {
 		if (success) {
 			setFormLoading(true);
 			try {
-				const crsftoken = getCookie("csrftoken");
-				await baseAPI.post(
-					"/users/register/",
-					{
-						username: usernameValue,
-						email: emailValue,
-						password: passwordValue,
-						password_confirm: confirmPasswordValue,
-						first_name: firstNameValue,
-						last_name: lastNameValue,
-					},
-					{
-						headers: {
-							"Content-Type": "application/json",
-							"X-CSRFToken": crsftoken,
-						},
-					},
-				);
+				await baseAPI.post("/users/register/", {
+					username: usernameValue,
+					email: emailValue,
+					password: passwordValue,
+					password_confirm: confirmPasswordValue,
+					first_name: firstNameValue,
+					last_name: lastNameValue,
+				});
+				const userData: AxiosResponse<ProfileType> =
+					await baseAPI.get("/users/profile/");
+				setUserData({ authenticated: true, ...userData.data });
 				setFormLoading(false);
 				navigate("/accounts/profile");
 			} catch (error) {
@@ -120,20 +114,7 @@ export default function Signup() {
 	}
 	return (
 		<>
-			<button
-				type="button"
-				onClick={() => {
-					try {
-						baseAPI.get("/users/logout/");
-						toast.success("error");
-					} catch {
-						toast.error("error");
-					}
-				}}
-			>
-				logout
-			</button>
-			<div className="w-full h-full grid place-items-center px-2 bg-white dark:bg-slate-900">
+			<div className="w-full min-h-full py-4 grid place-items-center px-2 bg-white dark:bg-slate-900">
 				<Form
 					title="signup"
 					onsubmit={formHandler}

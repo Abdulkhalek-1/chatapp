@@ -12,7 +12,9 @@ const useTheme = create<ThemeType>()(
 	),
 );
 
-type useUserDataType = { authenticated: boolean } & ProfileType;
+type useUserDataType = {
+	authenticated: boolean;
+} & ProfileType;
 const useUserData = create<
 	useUserDataType & {
 		setUserData: (userData: useUserDataType) => void;

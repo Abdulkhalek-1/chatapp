@@ -1,14 +1,15 @@
-import getCookie from "@/utils/getCookie"
-import axios from "axios"
+import getCookie from "@/utils/getCookie";
+import axios from "axios";
 
-const csrf = getCookie("csrftoken")
+const csrf = getCookie("csrftoken");
 
 const baseAPI = axios.create({
-	baseURL: `${import.meta.env.VITE_API_URL}/api/v1`,
+	baseURL: `${import.meta.env.VITE_API_URL}/api/v1/`,
 	withCredentials: true,
 	headers: {
 		"X-CSRFToken": csrf,
+		"Content-Type": "application/json",
 	},
-})
+});
 
-export default baseAPI
+export default baseAPI;
