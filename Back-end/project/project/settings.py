@@ -220,3 +220,14 @@ CSRF_TRUSTED_ORIGINS = ("http://localhost", "http://localhost")
 # ]
 
 
+<<<<<<< HEAD
+=======
+CSRF_TRUSTED_ORIGINS = (
+    "http://localhost:8000",
+    "http://localhost:5173",
+)
+CORS_ORIGIN_WHITELIST = [
+    "http://localhost:8000",
+    "http://localhost:5173",
+]
+>>>>>>> frontend

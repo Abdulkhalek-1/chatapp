@@ -24,7 +24,6 @@ export default function Reauthenticate() {
 					<Form.submitBtn>confirm</Form.submitBtn>
 				</Form>
 			</div>
-			<Toaster richColors position="top-right" />
 		</>
 	)
 }

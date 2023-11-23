@@ -1,13 +1,15 @@
 type ThemeType = {
-  theme: "light" | "dark" | "system";
-  setTheme: (theme: ThemeType["theme"]) => void;
+	theme: "light" | "dark" | "system";
+	setTheme: (theme: ThemeType["theme"]) => void;
 };
 
-type FriendType = {
-  name: string;
-  img: string;
-  id: string;
-  notifications: boolean;
-  status: "do not disturb" | "online" | "offline";
-  archive: boolean;
+type ProfileType = {
+	bio: string;
+	first_name: string;
+	last_name: string;
+	id: number;
+	friends: ProfileType[];
+	picture: string;
+	username: string;
+	user: number;
 };

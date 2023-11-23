@@ -1,12 +1,12 @@
-import { FormEvent } from "react"
-import { Input } from "@/components/ui/input"
-import { Toaster, toast } from "sonner"
-import Form from "@/components/ui/Form"
+import { FormEvent } from "react";
+import { Input } from "@/components/ui/input";
+import { toast } from "sonner";
+import Form from "@/components/ui/Form";
 
 export default function ResetPassword() {
 	function formHandler(e: FormEvent) {
-		e.preventDefault()
-		toast.success("authentication completed")
+		e.preventDefault();
+		toast.success("authentication completed");
 	}
 	return (
 		<>
@@ -20,14 +20,12 @@ export default function ResetPassword() {
 					<div className="flex flex-col gap-2 mb-4">
 						<Input title="email" type="email" />
 					</div>
-					<Form.submitBtn>reset password</Form.submitBtn>
+					<Form.SubmitBtn>reset password</Form.SubmitBtn>
 					<div className="flex justify-center items-center mt-auto w-full">
-						please contact us if you have any trouble
-						resetting your password
+						please contact us if you have any trouble resetting your password
 					</div>
 				</Form>
 			</div>
-			<Toaster richColors position="top-right" />
 		</>
-	)
+	);
 }
