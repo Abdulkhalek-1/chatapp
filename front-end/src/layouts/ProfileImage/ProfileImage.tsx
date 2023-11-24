@@ -12,7 +12,7 @@ export default function ProfileImage({ picture }: { picture: string }) {
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <Avatar asChild className="cursor-pointer">
+                <Avatar asChild className="cursor-pointer w-10 h-10">
                     <img alt="profile" src={picture} />
                 </Avatar>
             </DropdownMenuTrigger>

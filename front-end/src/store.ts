@@ -3,25 +3,37 @@ import { persist } from "zustand/middleware";
 import { dummyUserData } from "./constants";
 
 const useTheme = create<ThemeType>()(
-	persist(
-		(set) => ({
-			theme: "system",
-			setTheme: (theme) => set(() => ({ theme })),
-		}),
-		{ name: "theme" },
-	),
+    persist(
+        (set) => ({
+            theme: "system",
+            setTheme: (theme) => set(() => ({ theme })),
+        }),
+        { name: "theme" },
+    ),
 );
 
 type useUserDataType = {
-	authenticated: boolean;
+    authenticated: boolean;
 } & ProfileType;
 const useUserData = create<
-	useUserDataType & {
-		setUserData: (userData: useUserDataType) => void;
-	}
+    useUserDataType & {
+        setUserData: (userData: useUserDataType) => void;
+    }
 >()((set) => ({
-	authenticated: false,
-	...dummyUserData,
-	setUserData: (userData: useUserDataType) => set(() => userData),
+    authenticated: false,
+    ...dummyUserData,
+    setUserData: (userData: useUserDataType) => set(() => userData),
 }));
-export { useTheme, useUserData };
+
+type NotificationsType = {
+    friendRequests: FriendRequestType[];
+    setFriendRequests: (friendRequests: FriendRequestType[]) => void;
+};
+
+const useNotifications = create<NotificationsType>((set) => ({
+    friendRequests: [],
+    setFriendRequests: (friendRequests: FriendRequestType[]) =>
+        set(() => ({ friendRequests: friendRequests })),
+}));
+
+export { useTheme, useUserData, useNotifications };

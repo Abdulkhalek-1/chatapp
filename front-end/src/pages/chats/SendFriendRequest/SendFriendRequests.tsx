@@ -1,7 +1,10 @@
+import baseAPI from "@/api/base";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { FormEvent, useRef, useState } from "react";
+import { AxiosError } from "axios";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
+import UserCard from "./components/UserCard";
 export default function SendFriendRequests() {
     const usernameRef = useRef<HTMLInputElement>(null);
     const [formLoading, setFormLoading] = useState<boolean>(false);
@@ -16,17 +19,27 @@ export default function SendFriendRequests() {
                 if (usernameRef.current?.value.length > 0) {
                     if (usernameRef.current.value.includes(" "))
                         throw "username cannot contain spaces";
-                    toast.success("success");
+                    const userFoundedData = await baseAPI
+                        .get<ProfileType>(`/users/profile/?un=${usernameRef.current.value}`)
+                        .then((res) => res.data);
+                    setFoundedUserData(userFoundedData);
                 } else throw "please fill in the field";
             }
-        } catch (error) {
-            toast.error(`error - ${error}`);
+        } catch (err) {
+            setFoundedUserData(null);
+            type errorType = AxiosError<{ detail: string }> | string;
+            const error = err as errorType;
+            if (typeof error === "string") {
+                return toast.error(`error - ${error}`);
+            } else {
+                toast.error(`error - ${error.response?.data.detail}`);
+            }
         } finally {
             setFormLoading(false);
         }
     }
     return (
-        <div className="container text-white flex flex-col w-full mt-12 justify-center">
+        <div className="container text-white flex flex-col w-full h-[80%] mt-12 justify-center">
             <h1 className="text-center font-bold text-2xl text-black dark:text-white">
                 Send a Friend Request
             </h1>
@@ -40,7 +53,9 @@ export default function SendFriendRequests() {
                     {!formLoading ? "submit" : "sending..."}
                 </Button>
             </form>
-            {foundedUserData ? <h1>Founded User</h1> : null}
+            <div className="w-full h-full flex pt-14 items-center justify-center">
+                {foundedUserData ? <UserCard {...foundedUserData} /> : null}
+            </div>
         </div>
     );
 }

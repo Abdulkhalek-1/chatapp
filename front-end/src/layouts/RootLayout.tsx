@@ -1,30 +1,26 @@
 import { Button } from "@/components/ui/button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBell, faMoon, faSun } from "@fortawesome/free-solid-svg-icons";
-import {
-	Outlet,
-	useLoaderData,
-	useLocation,
-	useNavigate,
-} from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useDarkMode } from "usehooks-ts";
 import Friends from "@/components/friends/Friends";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
-import { Toaster } from "sonner";
+import { Toaster, toast } from "sonner";
 import baseAPI from "@/api/base";
-import { useUserData } from "@/store";
+import { useNotifications, useUserData } from "@/store";
 import { dummyUserData } from "@/constants";
 import ProfileImage from "./ProfileImage/ProfileImage";
+import NotificationBtn from "./NotificationBtn/NotificationBtn";
 
 const queryClient = new QueryClient();
 
 export default function RootLayout() {
 	const location = useLocation();
-	const friends = useLoaderData() as {
-		friendsPromise: Promise<ProfileType[]>;
-	};
 	const { setUserData, ...userData } = useUserData((store) => store);
+	const setUserFriendRequests = useNotifications(
+		(store) => store.setFriendRequests,
+	);
 	const profileImage = `${import.meta.env.VITE_API_URL}${userData.picture}`;
 	const navigate = useNavigate();
 	const { toggle, isDarkMode } = useDarkMode();
@@ -49,7 +45,18 @@ export default function RootLayout() {
 			}
 		}
 		getUserData();
-	}, [setUserData, navigate]);
+		async function getUserFriendRequests() {
+			try {
+				const friendRequests = await baseAPI
+					.get<FriendRequestType[]>("/users/friends/")
+					.then((res) => res.data);
+				setUserFriendRequests(friendRequests);
+			} catch {
+				toast.error("error something went wrong");
+			}
+		}
+		getUserFriendRequests();
+	}, [setUserData, navigate, setUserFriendRequests]);
 	if (location.pathname.startsWith("/accounts"))
 		return (
 			<>
@@ -71,9 +78,7 @@ export default function RootLayout() {
 									</h2>
 								</div>
 								<div className="flex gap-1">
-									<Button className="w-10 h-10" variant={"outline"}>
-										<FontAwesomeIcon className="text-md w-fit" icon={faBell} />
-									</Button>
+									<NotificationBtn />
 									<Button
 										variant={"outline"}
 										className="w-10 h-10"
